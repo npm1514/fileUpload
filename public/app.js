@@ -3,14 +3,16 @@ var getPhotos = function(){
     method: "GET",
     url: "/image"
   }).then(function(res){
+    console.log(res);
     for (var i = 0; i < res.length; i++) {
-      $('#imgs').append('<img src="'+res[i].url+'">')
+      $('#imgs').append('<h1>'+res[i].title+'</h1><img src="'+res[i].url+'">')
     }
   });
 };
 getPhotos();
 // -------------------------------
-$('#uploadForm').on('submit', function(){
+$('#uploadForm').on('submit', function(e){
+  e.preventDefault();
   $.ajax({
     method: "POST",
     url: "/image",
@@ -18,8 +20,22 @@ $('#uploadForm').on('submit', function(){
     contentType: false,
     processData: false,
     enctype: 'multipart/form-data'
-  }).then(function(){
-    getPhotos();
+  }).then(function(res){
+    postimage(res);
   });
 });
+
+var postimage = function(res){
+  var data = {
+    url: "./images/"+res.filename,
+    title: $('#imagetitle').val()
+  };
+  $.ajax({
+    method: "POST",
+    url: "/imagedb",
+    data: data
+  }).then(function(res){
+    getPhotos();
+  });
+};
 // ----------------------------------

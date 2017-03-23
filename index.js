@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded());
 app.use(express.static(__dirname + '/public'));
 
 app.post('/image', imageCtrl.create);
+app.post('/imagedb', imageCtrl.createDB);
 app.get('/image', imageCtrl.read);
 app.put('/image/:id', imageCtrl.update);
 app.delete('/image/:id', imageCtrl.delete);

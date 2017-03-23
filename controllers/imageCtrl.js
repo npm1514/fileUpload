@@ -7,23 +7,31 @@ var storage =   multer.diskStorage({
   },
   filename: function (req, file, callback) {
     var name = file.fieldname + '-' + Date.now();
-    var image = new ImageModel({url: './images/'+name});
-    image.save();//this is mongo, if you want Postgres, use image.create('./images/'+name)
     callback(null, name);
   }
 });
+
 var upload = multer({ storage : storage}).single('userPhoto');
 
 module.exports = {
   create: function(req,res){
-      upload(req,res,function(err) {
+      upload(req,res,function(err, result) {
           if(err) {
               return res.end("Error uploading file.");
           }
-          res.send();
+          res.send(req.file);
       });
   },
   // ---------------------------
+  createDB: function(req, res){
+    var image = new ImageModel(req.body);
+    image.save(function(err, result){
+        if (err) {
+          res.send(err);
+        }
+        res.send(result);
+      });
+  },
   read: function(req, res) {
     ImageModel
     .find(req.query)
